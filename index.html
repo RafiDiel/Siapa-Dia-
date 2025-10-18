@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siapa Dia? - Game Nongkrong</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#2c3e50">
+</head>
+<body>
+
+    <div id="app">
+        <h1>Siapa Dia? 🧐</h1>
+        
+        <div id="start-screen">
+            <p>Game ini dimainkan bergantian dengan satu HP. Siap-siap buka rahasia!</p>
+            <button onclick="startGame()">Mulai Game</button>
+        </div>
+
+        <div id="input-screen" class="hidden">
+            <h2>Masukkan Fakta Rahasia Lo</h2>
+            <p id="player-status">Pemain ke-1</p>
+            <textarea id="fact-input" placeholder="Contoh: Dia pernah nyasar di mall yang sama dua kali."></textarea>
+            <button onclick="submitFact()">Kirim Fakta</button>
+        </div>
+
+        <div id="reveal-screen" class="hidden">
+            <div id="fact-card">
+                <p>RAHASIA INI MILIK SALAH SATU DARI KALIAN:</p>
+                <div id="revealed-fact"></div>
+            </div>
+            <p class="instruction">Setelah Baca: Semua Tunjuk Siapa Pemilik Fakta!</p>
+            <div id="timer-display">5</div>
+            <button id="next-btn" class="hidden" onclick="revealOwner()">Siapa Pemiliknya?</button>
+        </div>
+        
+        <div id="owner-screen" class="hidden">
+            <h2>Pemilik Fakta Adalah...</h2>
+            <p id="fact-owner">Tunggu pengakuan dari yang bersangkutan!</p>
+            <button onclick="resetGame()">Main Lagi</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
