@@ -2,7 +2,7 @@
     "name": "Siapa Dia? - Nongkrong",
     "short_name": "Siapa Dia?",
     "description": "Game Kuis Cepat Pribadi untuk serunya nongkrong bareng.",
-    "start_url": "/index.html",
+    "start_url": "./index.html",
     "display": "standalone",
     "background_color": "#2c3e50",
     "theme_color": "#e74c3c",
