@@ -30,15 +30,23 @@
                 <p>RAHASIA INI MILIK SALAH SATU DARI KALIAN:</p>
                 <div id="revealed-fact"></div>
             </div>
-            <p class="instruction">Setelah Baca: Semua Tunjuk Siapa Pemilik Fakta!</p>
-            <div id="timer-display">5</div>
-            <button id="next-btn" class="hidden" onclick="revealOwner()">Siapa Pemiliknya?</button>
+            
+            <button onclick="startPointingTimer()">Siap Menunjuk! 👀</button> 
+            
+            </div>
+
+        <div id="pointing-screen" class="hidden">
+            <h2>Tunjuk! Tunjuk! Tunjuk!</h2>
+            <p class="instruction">SEMUA harus serempak menunjuk dalam...</p>
+            <div id="pointing-timer-display">5</div>
+            <button id="show-owner-btn" class="hidden" onclick="revealOwner()">Waktunya Pengakuan! 🫣</button>
         </div>
         
         <div id="owner-screen" class="hidden">
             <h2>Pemilik Fakta Adalah...</h2>
             <p id="fact-owner">Tunggu pengakuan dari yang bersangkutan!</p>
-            <button onclick="resetGame()">Main Lagi</button>
+            
+            <button id="next-fact-btn" onclick="nextFact()">Fakta Berikutnya</button>
         </div>
     </div>
 

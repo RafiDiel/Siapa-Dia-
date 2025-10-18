@@ -87,3 +87,13 @@ textarea {
     color: #bdc3c7;
     margin-top: 20px;
 }
+
+/* ... (Style lainnya TIDAK BERUBAH) ... */
+
+/* New Pointing Timer Style */
+#pointing-timer-display {
+    font-size: 3em;
+    font-weight: bold;
+    color: #e67e22; /* Orange Timer for action */
+    margin-top: 15px;
+}

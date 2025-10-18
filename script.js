@@ -1,7 +1,8 @@
 let facts = [];
+let unplayedFactIndices = []; // Array untuk menyimpan indeks fakta yang belum dimainkan
 let playerCount = 0;
 let currentPlayer = 1;
-const MAX_PLAYERS = 10; // Sesuai permintaan lo
+const MAX_PLAYERS = 10;
 
 // Utility function to show a screen and hide others
 function showScreen(id) {
@@ -13,7 +14,9 @@ function showScreen(id) {
 
 function startGame() {
     facts = [];
+    unplayedFactIndices = [];
     currentPlayer = 1;
+    
     // Tanyakan jumlah pemain saat game dimulai
     let num = prompt("Masukkan Jumlah Pemain (min 2, max 10):", "4");
     playerCount = parseInt(num);
@@ -36,14 +39,15 @@ function submitFact() {
         return;
     }
 
-    // Simpan fakta dan ID pemilik (currentPlayer)
-    facts.push({ id: currentPlayer, fact: fact });
+    // Simpan fakta dan ID pemilik
+    facts.push({ id: currentPlayer, fact: fact, played: false });
     
     // Pindah ke pemain berikutnya
     currentPlayer++;
 
     if (currentPlayer > playerCount) {
-        // Semua pemain sudah mengisi, saatnya Reveal
+        // Semua pemain sudah mengisi, inisialisasi indeks fakta yang belum dimainkan
+        unplayedFactIndices = Array.from({ length: facts.length }, (_, i) => i);
         showRevealScreen();
     } else {
         // Lanjut ke pemain berikutnya
@@ -54,27 +58,41 @@ function submitFact() {
 }
 
 function showRevealScreen() {
+    // Cek apakah semua fakta sudah dimainkan
+    if (unplayedFactIndices.length === 0) {
+        alert("Wih! Semua fakta sudah terbongkar! Game selesai, saatnya bikin rahasia baru.");
+        return resetGame(); // Kembali ke layar awal
+    }
+
     showScreen('reveal-screen');
     
-    // Ambil fakta acak dari array
-    const randomIndex = Math.floor(Math.random() * facts.length);
-    const chosenFact = facts[randomIndex];
+    // 3. Ambil fakta secara acak dari yang BELUM dimainkan
+    const randomIdxIndex = Math.floor(Math.random() * unplayedFactIndices.length);
+    const factIndex = unplayedFactIndices[randomIdxIndex];
+    const chosenFact = facts[factIndex];
     
-    // Ganti kata ganti "Dia" di awal fakta (biar lebih proper)
+    // Tampilkan fakta
     let displayFact = chosenFact.fact.replace(/^(Dia)/i, '***');
-
     document.getElementById('revealed-fact').innerHTML = displayFact;
     
-    // Simpan fakta terpilih agar bisa ditampilkan pemiliknya nanti
-    document.getElementById('revealed-fact').dataset.ownerId = chosenFact.id;
+    // Simpan INDEX fakta yang dipilih (bukan ID pemilik)
+    document.getElementById('revealed-fact').dataset.factIndex = factIndex;
+    
+    // Hapus indeks fakta ini dari array unplayedFactIndices (agar tidak muncul lagi)
+    unplayedFactIndices.splice(randomIdxIndex, 1);
+}
 
-    // Mulai Timer 5 detik
+// 1. Fungsi yang dipanggil ketika tombol 'Siap Menunjuk!' ditekan
+function startPointingTimer() {
+    showScreen('pointing-screen');
+
+    // 2. Mulai Timer 5 detik untuk Menunjuk
     let timer = 5;
-    const timerDisplay = document.getElementById('timer-display');
-    const nextBtn = document.getElementById('next-btn');
+    const timerDisplay = document.getElementById('pointing-timer-display');
+    const showOwnerBtn = document.getElementById('show-owner-btn');
     
     timerDisplay.innerText = timer;
-    nextBtn.classList.add('hidden'); // Sembunyikan tombol 'Siapa Pemiliknya?' dulu
+    showOwnerBtn.classList.add('hidden'); 
 
     const countdown = setInterval(() => {
         timer--;
@@ -82,20 +100,36 @@ function showRevealScreen() {
 
         if (timer <= 0) {
             clearInterval(countdown);
-            timerDisplay.innerText = "Tunjuk! Tunjuk! Tunjuk!";
-            nextBtn.classList.remove('hidden'); // Tampilkan tombol setelah waktu menunjuk habis
+            timerDisplay.innerText = "WAKTUNYA BUKTIKAN!";
+            showOwnerBtn.classList.remove('hidden'); // Tampilkan tombol untuk ke layar pengakuan
         }
     }, 1000);
 }
 
 function revealOwner() {
     showScreen('owner-screen');
-    const ownerId = document.getElementById('revealed-fact').dataset.ownerId;
+    const factIndex = document.getElementById('revealed-fact').dataset.factIndex;
+    const ownerId = facts[factIndex].id;
     
-    // Tampilkan informasi pemilik fakta yang tersembunyi
+    // Tampilkan informasi pemilik fakta
     document.getElementById('fact-owner').innerText = `Pemilik fakta ini adalah... Pemain ke-${ownerId} !`;
     
-    // Disini Momen Interaksi: Pemilik (Pemain ke-X) harus mengakui dan bercerita.
+    // Cek apakah masih ada fakta tersisa untuk mengubah teks tombol
+    if (unplayedFactIndices.length > 0) {
+         document.getElementById('next-fact-btn').innerText = `Lanjut ke ${facts.length - unplayedFactIndices.length + 1} / ${facts.length} Fakta Berikutnya`;
+    } else {
+        document.getElementById('next-fact-btn').innerText = "Semua Fakta Selesai! Main Lagi dari Awal";
+    }
+}
+
+// 3. Tombol untuk lanjut ke Fakta berikutnya
+function nextFact() {
+    if (unplayedFactIndices.length > 0) {
+        showRevealScreen();
+    } else {
+        // Jika sudah habis, kembali ke layar awal
+        resetGame();
+    }
 }
 
 function resetGame() {
